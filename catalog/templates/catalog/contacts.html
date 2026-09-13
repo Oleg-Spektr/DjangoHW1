@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Контакты</title>
+    <link href="https://jsdelivr.net" rel="stylesheet">
+</head>
+<body>
+    <div class="container mt-5">
+        <h1 class="text-success">Наши контакты</h1>
+        <p>Email: example@djshop.ru</p>
+
+        <!-- Форма обратной связи из доп. задания -->
+        <div class="card p-4 mt-4" style="max-width: 500px;">
+            <h3>Напишите нам</h3>
+            {% if message_sent %}
+                <div class="alert alert-info">Форма успешно отправлена!</div>
+            {% endif %}
+            <form method="post">
+                {% csrf_token %}
+                <div class="mb-3">
+                    <label class="form-label">Ваше имя</label>
+                    <input type="text" name="name" class="form-control" required>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Сообщение</label>
+                    <textarea name="message" class="form-control" rows="3" required></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">Отправить</button>
+            </form>
+        </div>
+        <br>
+        <a href="{% url 'catalog:home' %}" class="btn btn-secondary">Назад на главную</a>
+    </div>
+</body>
+</html>
