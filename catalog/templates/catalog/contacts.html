@@ -2,25 +2,42 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>Контакты</title>
+    <title>Контакты - Skystore</title>
     <link href="https://jsdelivr.net" rel="stylesheet">
 </head>
 <body>
-    <div class="container mt-5">
-        <h1 class="text-success">Наши контакты</h1>
-        <p>Email: example@djshop.ru</p>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container">
+            <a class="navbar-brand" href="{% url 'catalog:home' %}">Skystore</a>
+            <div class="navbar-nav">
+                <a class="nav-link" href="{% url 'catalog:home' %}">Каталог</a>
+                <a class="nav-link" href="{% url 'catalog:contacts' %}">Контакты</a>
+            </div>
+        </div>
+    </nav>
 
-        <!-- Форма обратной связи из доп. задания -->
+    <div class="container mt-5">
+        <h1>Контакты</h1>
+        <table class="table w-50">
+            <tr><td><strong>Страна</strong></td><td>USA</td></tr>
+            <tr><td><strong>ИНН</strong></td><td>91-1144442</td></tr>
+            <tr><td><strong>Адрес</strong></td><td>Redmond, WA, 98052-6399</td></tr>
+        </table>
+
         <div class="card p-4 mt-4" style="max-width: 500px;">
-            <h3>Напишите нам</h3>
+            <h4>Свяжитесь с нами</h4>
             {% if message_sent %}
-                <div class="alert alert-info">Форма успешно отправлена!</div>
+                <div class="alert alert-success">Сообщение успешно отправлено!</div>
             {% endif %}
             <form method="post">
                 {% csrf_token %}
                 <div class="mb-3">
-                    <label class="form-label">Ваше имя</label>
+                    <label class="form-label">Имя</label>
                     <input type="text" name="name" class="form-control" required>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Телефон</label>
+                    <input type="text" name="phone" class="form-control" required>
                 </div>
                 <div class="mb-3">
                     <label class="form-label">Сообщение</label>
@@ -29,8 +46,12 @@
                 <button type="submit" class="btn btn-primary">Отправить</button>
             </form>
         </div>
-        <br>
-        <a href="{% url 'catalog:home' %}" class="btn btn-secondary">Назад на главную</a>
     </div>
+
+    <footer class="bg-light text-center text-lg-start mt-5 py-3">
+        <div class="container text-center text-muted">
+            SkyStore © 2023
+        </div>
+    </footer>
 </body>
 </html>

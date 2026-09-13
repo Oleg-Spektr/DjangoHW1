@@ -2,14 +2,43 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>Главная</title>
+    <title>Skystore</title>
     <link href="https://jsdelivr.net" rel="stylesheet">
 </head>
 <body>
-    <div class="container text-center mt-5">
-        <h1 class="display-4 text-primary">Главная страница магазина</h1>
-        <p class="lead">Добро пожаловать в наше Django-приложение!</p>
-        <a href="{% url 'catalog:contacts' %}" class="btn btn-success">Перейти в контакты</a>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container">
+            <a class="navbar-brand" href="{% url 'catalog:home' %}">Skystore</a>
+            <div class="navbar-nav">
+                <a class="nav-link" href="{% url 'catalog:home' %}">Каталог</a>
+                <a class="nav-link" href="{% url 'catalog:contacts' %}">Контакты</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-5">
+        <h1>Skystore</h1>
+        <p class="lead">Skystore - это отличный вариант хранения ваших плагинов и примеров кода, который вы бы хотели продать</p>
+
+        <div class="card mt-4" style="width: 18rem;">
+            <div class="card-body">
+                <h5 class="card-title">Удобный сервис рассылок</h5>
+                <p class="card-text text-success fs-3">$ 140</p>
+                <ul class="list-unstyled">
+                    <li>- Неограниченная лицензия</li>
+                    <li>- Поддержка</li>
+                    <li>- Установка на сервер</li>
+                    <li>- Получение обновлений</li>
+                </ul>
+                <button class="btn btn-primary">Купить</button>
+            </div>
+        </div>
     </div>
+
+    <footer class="bg-light text-center text-lg-start mt-5 py-3">
+        <div class="container text-center text-muted">
+            SkyStore © 2023
+        </div>
+    </footer>
 </body>
 </html>
