@@ -1,24 +1,30 @@
-from django.shortcuts import render, get_object_or_404
+from django.views.generic import ListView, DetailView, TemplateView
+from django.shortcuts import render
 from catalog.models import Product, ContactMessage
 
-def home_view(request):
-    products = Product.objects.all()
+# Переводим home_view на ListView
+class ProductListView(ListView):
+    model = Product
+    template_name = 'catalog/home.html'
+    context_object_name = 'products'
 
-    context = {
-        'products': products
-    }
-    return render(request, 'catalog/home.html', context)
+# Переводим product_detail на DetailView
+class ProductDetailView(DetailView):
+    model = Product
+    template_name = 'catalog/product_detail.html'
+    context_object_name = 'product'
 
-def contacts_view(request):
-    context = {}
-    if request.method == 'POST':
+# Переводим contacts_view на базовый TemplateView с обработкой POST
+class ContactsTemplateView(TemplateView):
+    template_name = 'catalog/contacts.html'
+
+    def post(self, request, *args, **kwargs):
+        context = self.get_context_data(**kwargs)
         name = request.POST.get('name')
         phone = request.POST.get('phone')
         message = request.POST.get('message')
 
-        # Защита от ошибок и валидация: проверяем, что все поля заполнены
         if name and phone and message:
-            # Сохраняем обращение напрямую в базу данных PostgreSQL
             ContactMessage.objects.create(
                 name=name,
                 phone=phone,
@@ -28,9 +34,4 @@ def contacts_view(request):
         else:
             context['error'] = "Пожалуйста, заполните все поля формы!"
 
-    return render(request, 'catalog/contacts.html', context)
-
-def product_detail(request, pk):
-    # Извлекаем объект по pk или возвращаем 404, если не найден
-    product = get_object_or_404(Product, pk=pk)
-    return render(request, 'catalog/product_detail.html', {'product': product})
+        return render(request, self.template_name, context)
