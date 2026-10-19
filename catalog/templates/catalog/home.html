@@ -3,7 +3,12 @@
 {% block title %}Главная - Skystore{% endblock %}
 
 {% block content %}
-<h1>Skystore</h1>
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1>Skystore</h1>
+    <!-- Кнопка для создания нового продукта (Задание 1) -->
+    <a href="{% url 'catalog:product_create' %}" class="btn btn-success">Добавить продукт</a>
+</div>
+
 <p class="lead">Skystore - это отличный вариант хранения ваших плагинов и примеров кода, который вы бы хотели продать</p>
 
 <div class="row row-cols-1 row-cols-md-3 g-4 mt-4">
@@ -24,7 +29,13 @@
                     <p class="card-text text-muted flex-grow-1">{{ product.description|truncatechars:100 }}</p>
                     <p class="card-text text-success fs-3">${{ product.price }}</p>
                     <span class="badge bg-secondary mb-3">Категория: {{ product.category.name }}</span>
-                    <a href="{% url 'catalog:product_detail' product.pk %}" class="btn btn-primary w-100">Посмотреть товар</a>
+
+                    <!-- Блок кнопок управления карточкой товара -->
+                    <div class="btn-group w-100 mt-auto">
+                        <a href="{% url 'catalog:product_detail' product.pk %}" class="btn btn-sm btn-primary">Посмотреть</a>
+                        <a href="{% url 'catalog:product_update' product.pk %}" class="btn btn-sm btn-outline-secondary">Редактировать</a>
+                        <a href="{% url 'catalog:product_delete' product.pk %}" class="btn btn-sm btn-outline-danger">Удалить</a>
+                    </div>
                 </div>
             </div>
         </div>
