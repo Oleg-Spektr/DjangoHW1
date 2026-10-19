@@ -1,6 +1,8 @@
-from django.views.generic import ListView, DetailView, TemplateView
+from django.urls import reverse_lazy, reverse
+from django.views.generic import ListView, DetailView, TemplateView, CreateView, UpdateView, DeleteView
 from django.shortcuts import render
 from catalog.models import Product, ContactMessage
+from catalog.forms import ProductForm
 
 # Переводим home_view на ListView
 class ProductListView(ListView):
@@ -35,3 +37,26 @@ class ContactsTemplateView(TemplateView):
             context['error'] = "Пожалуйста, заполните все поля формы!"
 
         return render(request, self.template_name, context)
+
+class ProductCreateView(CreateView):
+    model = Product
+    form_class = ProductForm  # Привязываем нашу валидную форму
+    template_name = 'catalog/product_form.html'
+    success_url = reverse_lazy('catalog:home')
+
+
+class ProductUpdateView(UpdateView):
+    model = Product
+    form_class = ProductForm  # Привязываем форму для редактирования
+    template_name = 'catalog/product_form.html'
+
+    def get_success_url(self):
+        # Перенаправляем на детальный просмотр обновленного товара
+        return reverse('catalog:product_detail', kwargs={'pk': self.object.pk})
+
+
+class ProductDeleteView(DeleteView):
+    model = Product
+    model = Product
+    template_name = 'catalog/product_confirm_delete.html'
+    success_url = reverse_lazy('catalog:home')

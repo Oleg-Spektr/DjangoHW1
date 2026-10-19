@@ -1,0 +1,41 @@
+{% extends 'catalog/base.html' %}
+
+{% block title %}{% if object %}Редактирование{% else %}Добавление{% endif %} продукта - Skystore{% endblock %}
+
+{% block content %}
+<div class="card p-4 mx-auto shadow-sm" style="max-width: 600px;">
+    <!-- Динамический заголовок в зависимости от того, создаем мы товар или редактируем -->
+    <h2>{% if object %}Редактирование продукта "{{ object.name }}"{% else %}Добавление нового продукта{% endif %}</h2>
+    <hr>
+    
+    <!-- Атрибут enctype="multipart/form-data" строго обязателен для загрузки изображений товара -->
+    <form method="post" enctype="multipart/form-data" novalidate>
+        {% csrf_token %}
+        
+        <!-- Вывод общих ошибок формы, если они есть -->
+        {% if form.non_field_errors %}
+            <div class="alert alert-danger">{{ form.non_field_errors }}</div>
+        {% endif %}
+
+        <!-- Цикл, который перебирает и красиво выводит каждое поле из нашей ProductForm -->
+        {% for field in form %}
+            <div class="mb-3">
+                <label class="form-label fw-bold" for="{{ field.id_for_label }}">{{ field.label }}</label>
+                {{ field }}
+                
+                <!-- Вывод ошибок валидации конкретного поля (например, если ввели запрещенное слово) -->
+                {% if field.errors %}
+                    <div class="text-danger small mt-1 fw-bold">
+                        {{ field.errors|striptags }}
+                    </div>
+                {% endif %}
+            </div>
+        {% endfor %}
+        
+        <div class="mt-4">
+            <button type="submit" class="btn btn-success px-4">Сохранить</button>
+            <a href="{% url 'catalog:home' %}" class="btn btn-outline-secondary px-4">Отмена</a>
+        </div>
+    </form>
+</div>
+{% endblock %}
