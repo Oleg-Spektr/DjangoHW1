@@ -1,24 +1,29 @@
 from django.urls import reverse_lazy, reverse
 from django.views.generic import ListView, DetailView, TemplateView, CreateView, UpdateView, DeleteView
 from django.shortcuts import render
+from django.contrib.auth.decorators import login_required
+from django.utils.decorators import method_decorator
+
 from catalog.models import Product, ContactMessage
 from catalog.forms import ProductForm
 
-# Главная страница (Каталог) остается общедоступной по условию ТЗ
+
+# 1. Главная страница каталога (Доступна всем без авторизации - Критерий 9)
 class ProductListView(ListView):
     model = Product
     template_name = 'catalog/home.html'
     context_object_name = 'products'
 
 
-# Задание 3: Закрываем доступ к просмотру деталей для анонимов
+# 2. Детальный просмотр товара (Защищен от анонимов - Критерий 8)
+@method_decorator(login_required, name='dispatch')
 class ProductDetailView(DetailView):
     model = Product
     template_name = 'catalog/product_detail.html'
     context_object_name = 'product'
 
 
-# Контакты остаются открытыми для всех
+# 3. Страница контактов с обработкой формы (Доступна всем)
 class ContactsTemplateView(TemplateView):
     template_name = 'catalog/contacts.html'
 
@@ -41,7 +46,8 @@ class ContactsTemplateView(TemplateView):
         return render(request, self.template_name, context)
 
 
-# Задание 3: Закрываем создание продуктов
+# 4. Создание нового продукта (Защищено от анонимов - Критерий 8)
+@method_decorator(login_required, name='dispatch')
 class ProductCreateView(CreateView):
     model = Product
     form_class = ProductForm
@@ -49,7 +55,8 @@ class ProductCreateView(CreateView):
     success_url = reverse_lazy('catalog:home')
 
 
-# Задание 3: Закрываем редактирование продуктов
+# 5. Редактирование продукта (Защищено от анонимов - Критерий 8)
+@method_decorator(login_required, name='dispatch')
 class ProductUpdateView(UpdateView):
     model = Product
     form_class = ProductForm
@@ -59,7 +66,8 @@ class ProductUpdateView(UpdateView):
         return reverse('catalog:product_detail', kwargs={'pk': self.object.pk})
 
 
-# Задание 3: Закрываем удаление продуктов
+# 6. Удаление продукта (Защищено от анонимов - Критерий 8)
+@method_decorator(login_required, name='dispatch')
 class ProductDeleteView(DeleteView):
     model = Product
     template_name = 'catalog/product_confirm_delete.html'
