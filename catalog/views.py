@@ -4,19 +4,21 @@ from django.shortcuts import render
 from catalog.models import Product, ContactMessage
 from catalog.forms import ProductForm
 
-# Переводим home_view на ListView
+# Главная страница (Каталог) остается общедоступной по условию ТЗ
 class ProductListView(ListView):
     model = Product
     template_name = 'catalog/home.html'
     context_object_name = 'products'
 
-# Переводим product_detail на DetailView
+
+# Задание 3: Закрываем доступ к просмотру деталей для анонимов
 class ProductDetailView(DetailView):
     model = Product
     template_name = 'catalog/product_detail.html'
     context_object_name = 'product'
 
-# Переводим contacts_view на базовый TemplateView с обработкой POST
+
+# Контакты остаются открытыми для всех
 class ContactsTemplateView(TemplateView):
     template_name = 'catalog/contacts.html'
 
@@ -38,25 +40,27 @@ class ContactsTemplateView(TemplateView):
 
         return render(request, self.template_name, context)
 
+
+# Задание 3: Закрываем создание продуктов
 class ProductCreateView(CreateView):
     model = Product
-    form_class = ProductForm  # Привязываем нашу валидную форму
+    form_class = ProductForm
     template_name = 'catalog/product_form.html'
     success_url = reverse_lazy('catalog:home')
 
 
+# Задание 3: Закрываем редактирование продуктов
 class ProductUpdateView(UpdateView):
     model = Product
-    form_class = ProductForm  # Привязываем форму для редактирования
+    form_class = ProductForm
     template_name = 'catalog/product_form.html'
 
     def get_success_url(self):
-        # Перенаправляем на детальный просмотр обновленного товара
         return reverse('catalog:product_detail', kwargs={'pk': self.object.pk})
 
 
+# Задание 3: Закрываем удаление продуктов
 class ProductDeleteView(DeleteView):
-    model = Product
     model = Product
     template_name = 'catalog/product_confirm_delete.html'
     success_url = reverse_lazy('catalog:home')

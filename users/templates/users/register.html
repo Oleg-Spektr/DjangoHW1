@@ -1,0 +1,13 @@
+{% extends 'catalog/base.html' %}
+{% block content %}
+<div class="card p-4 mx-auto shadow-sm" style="max-width: 450px;">
+    <h2 class="text-center">Регистрация</h2>
+    <hr>
+    <form method="post" novalidate>
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-success w-100 mt-2">Зарегистрироваться</button>
+    </form>
+    <p class="text-center mt-3 small">Уже есть аккаунт? <a href="{% url 'users:login' %}">Войти</a></p>
+</div>
+{% endblock %}

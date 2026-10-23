@@ -31,6 +31,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     'catalog',
     'blog',
+    'users',
 ]
 
 MIDDLEWARE = [
@@ -124,8 +125,13 @@ STATIC_URL = "static/"
 MAILERS = {
     "default": {
         "BACKEND": "django.core.mail.backends.console.EmailBackend",
-    },
+    }
 }
+DEFAULT_FROM_EMAIL = 'webmaster@localhost'
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+AUTH_USER_MODEL = 'users.User'
+
+LOGIN_URL = 'users:login'
