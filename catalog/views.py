@@ -3,6 +3,7 @@ from django.views.generic import ListView, DetailView, TemplateView, CreateView,
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
+from django.core.exceptions import PermissionDenied
 
 from catalog.models import Product, ContactMessage
 from catalog.forms import ProductForm
@@ -54,6 +55,13 @@ class ProductCreateView(CreateView):
     template_name = 'catalog/product_form.html'
     success_url = reverse_lazy('catalog:home')
 
+    def form_valid(self, form):
+        """Критерий: при создании продукта поле owner заполняется автоматом в зависимости от пользователя"""
+        product = form.save(commit=False)
+        product.owner = self.request.user  # Привязываем текущего залогиненного юзера
+        product.save()
+        return super().form_valid(form)
+
 
 # 5. Редактирование продукта (Защищено от анонимов - Критерий 8)
 @method_decorator(login_required, name='dispatch')
@@ -61,6 +69,13 @@ class ProductUpdateView(UpdateView):
     model = Product
     form_class = ProductForm
     template_name = 'catalog/product_form.html'
+
+    def get_object(self, queryset=None):
+        self.object = super().get_object(queryset)
+        # Проверяем, является ли пользователь владельцем ИЛИ модератором (имеет кастомное право)
+        if self.request.user == self.object.owner or self.request.user.has_perm('catalog.can_unpublish_product'):
+            return self.object
+        raise PermissionDenied("Вы не являетесь владельцем этого товара или модератором!")
 
     def get_success_url(self):
         return reverse('catalog:product_detail', kwargs={'pk': self.object.pk})
@@ -72,3 +87,10 @@ class ProductDeleteView(DeleteView):
     model = Product
     template_name = 'catalog/product_confirm_delete.html'
     success_url = reverse_lazy('catalog:home')
+
+    def get_object(self, queryset=None):
+        self.object = super().get_object(queryset)
+        # Проверяем владельца ИЛИ модератора
+        if self.request.user == self.object.owner or self.request.user.has_perm('catalog.can_unpublish_product'):
+            return self.object
+        raise PermissionDenied("Вы не можете удалить чужой товар!")

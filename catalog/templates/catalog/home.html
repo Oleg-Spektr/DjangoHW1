@@ -32,9 +32,14 @@
 
                     <!-- Блок кнопок управления карточкой товара -->
                     <div class="btn-group w-100 mt-auto">
+                        <!-- Кнопка «Посмотреть» доступна всем -->
                         <a href="{% url 'catalog:product_detail' product.pk %}" class="btn btn-sm btn-primary">Посмотреть</a>
-                        <a href="{% url 'catalog:product_update' product.pk %}" class="btn btn-sm btn-outline-secondary">Редактировать</a>
-                        <a href="{% url 'catalog:product_delete' product.pk %}" class="btn btn-sm btn-outline-danger">Удалить</a>
+
+                        <!-- Критерий: Кнопки редактирования и удаления видны ТОЛЬКО владельцу или модератору -->
+                        {% if user == product.owner or perms.catalog.can_unpublish_product %}
+                            <a href="{% url 'catalog:product_update' product.pk %}" class="btn btn-sm btn-outline-secondary">Редактировать</a>
+                            <a href="{% url 'catalog:product_delete' product.pk %}" class="btn btn-sm btn-outline-danger">Удалить</a>
+                        {% endif %}
                     </div>
                 </div>
             </div>
