@@ -4,6 +4,7 @@ from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from django.core.exceptions import PermissionDenied
+from catalog.services import get_products_by_category
 
 from catalog.models import Product, ContactMessage
 from catalog.forms import ProductForm
@@ -94,3 +95,21 @@ class ProductDeleteView(DeleteView):
         if self.request.user == self.object.owner or self.request.user.has_perm('catalog.can_unpublish_product'):
             return self.object
         raise PermissionDenied("Вы не можете удалить чужой товар!")
+
+class CategoryProductListView(ListView):
+    template_name = 'catalog/category_products.html'
+    context_object_name = 'products'
+
+    def get_queryset(self):
+        # Принимает ID категории из URL и передает в сервис
+        self.category_id = self.kwargs.get('pk')
+        return get_products_by_category(self.category_id)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        # Добавим в контекст саму категорию для красивого заголовка
+        if context['products']:
+            context['category_name'] = context['products'][0].category.name
+        else:
+            context['category_name'] = "Выбранная категория"
+        return context

@@ -28,7 +28,9 @@
                     <!-- Критерий: обрезка описания до 100 символов -->
                     <p class="card-text text-muted flex-grow-1">{{ product.description|truncatechars:100 }}</p>
                     <p class="card-text text-success fs-3">${{ product.price }}</p>
-                    <span class="badge bg-secondary mb-3">Категория: {{ product.category.name }}</span>
+                    <a href="{% url 'catalog:category_products' product.category.pk %}" class="badge bg-secondary mb-3 text-decoration-none">
+    Категория: {{ product.category.name }}
+</a>
 
                     <!-- Блок кнопок управления карточкой товара -->
                     <div class="btn-group w-100 mt-auto">
