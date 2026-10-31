@@ -1,0 +1,31 @@
+{% extends 'catalog/base.html' %}
+{% block content %}
+<div class="mb-4">
+    <a href="{% url 'catalog:home' %}" class="btn btn-outline-secondary btn-sm">← Назад в общий каталог</a>
+    <h1 class="mt-3">Продукты категории: "{{ category_name }}"</h1>
+</div>
+
+<div class="row row-cols-1 row-cols-md-3 g-4">
+    {% for product in products %}
+        <div class="col">
+            <div class="card h-100 shadow-sm">
+                {% if product.image %}
+                    <img src="{{ product.image.url }}" class="card-img-top" alt="{{ product.name }}" style="height: 200px; object-fit: cover;">
+                {% else %}
+                    <div class="bg-light text-center py-5 text-muted" style="height: 200px; line-height: 100px;">Нет изображения</div>
+                {% endif %}
+                <div class="card-body d-flex flex-column">
+                    <h5 class="card-title">{{ product.name }}</h5>
+                    <p class="card-text text-muted flex-grow-1">{{ product.description|truncatechars:100 }}</p>
+                    <p class="card-text text-success fs-3">${{ product.price }}</p>
+                    <a href="{% url 'catalog:product_detail' product.pk %}" class="btn btn-primary w-100 mt-auto">Посмотреть товар</a>
+                </div>
+            </div>
+        </div>
+    {% empty %}
+        <div class="col-12">
+            <div class="alert alert-info">В этой категории пока нет опубликованных товаров.</div>
+        </div>
+    {% endfor %}
+</div>
+{% endblock %}
